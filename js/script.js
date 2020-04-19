@@ -40,7 +40,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
 
     function getTimeRemaining(endTime){
 
-        let t = Date.parse(deadLine) - Date.parse(new Date());
+        let t = Date.parse(endTime) - Date.parse(new Date());
 
         let seconds = Math.floor((t/1000)%60);
         let minutes = Math.floor((t/1000/60)%60);
@@ -119,7 +119,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
         failure: 'Что-то пошло не так'
     };
 
-    let form = document.querySelector('main-form'),
+    let form = document.querySelector('.main-form'),
         input = form.getElementsByTagName('input'),
         statusMessage = document.createElement('div');
 
@@ -144,7 +144,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
         let json = JSON.stringify(obj);
 
         request.send(json); 
-        
+
         request.addEventListener('readystatechange', ()=>{
             if(request.readyState < 4){
                 statusMessage.innerHTML = message.loading;
@@ -159,5 +159,56 @@ window.addEventListener('DOMContentLoaded', ()=>{
             input[i].value = '';
         }
 
+    });
+
+    // Slider 
+
+    let slideIndex = 1,
+        sliders = document.querySelectorAll('.slider-item'),
+        prev = document.querySelector('.prev'),
+        next = document.querySelector('.next'),
+        dotsWrap = document.querySelector('.slider-dots'),
+        dots = document.querySelectorAll('.dot');
+
+    showSlides(slideIndex);
+
+    function showSlides(n){
+
+        if(n > sliders.length){
+            slideIndex = 1;
+        }
+        if(n < 1){
+            slideIndex = sliders.length;
+        }
+        
+        sliders.forEach((item)=>item.style.display = 'none');
+        dots.forEach((item)=>item.classList.remove('dot-active'));
+
+        sliders[slideIndex-1].style.display = 'block';
+        dots[slideIndex-1].classList.add('dot-active');
+
+    }
+
+    function plusSlides(n){
+        showSlides(slideIndex += n);
+    }
+
+    function currentSlide(n){
+        showSlides(slideIndex = n);
+    }
+
+    prev.addEventListener('click', ()=>{
+        plusSlides(-1);
+    });
+    next.addEventListener('click', ()=>{
+        plusSlides(1);
+    });
+
+    dotsWrap.addEventListener('click', function(event){
+        for(let i = 0; i <dots.length + 1; i++){
+            if(event.target.classList.contains('dot') && event.target == dots[i-1]){
+                currentSlide(i);
+            }
+        }
     });
 });
